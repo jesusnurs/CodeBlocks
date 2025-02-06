@@ -11,6 +11,7 @@ namespace Installers
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<UserBalanceSystem>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlayerInputSystem>().AsSingle();
             
             //Data
             Container.BindInstance(playerMovementData).AsSingle();

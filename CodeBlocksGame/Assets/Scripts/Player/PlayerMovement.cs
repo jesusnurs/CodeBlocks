@@ -7,28 +7,29 @@ using Zenject;
 
 namespace Player
 {
+    [RequireComponent(typeof(Rigidbody))]
     public class PlayerMovement : MonoBehaviour
     {
         [Inject]
         private PlayerMovementData _playerMovementData;
+        [Inject]
+        private PlayerInputSystem _playerInputSystem;
+        
+        private InputAction _moveAction;
+        private InputAction _dashAction;
+        private InputAction _interactAction;
     
         private Rigidbody _rigidbody;
-        private PlayerInputSystem _playerInputSystem;
-        private InputAction _moveAction;
-    
+        private Vector2 _movementDirection;
+        
         private float _moveSpeed;
         private float _dashForce;
         
-        private Vector2 _movementDirection;
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
-            
-            _playerInputSystem = new PlayerInputSystem();
-            _playerInputSystem.Player.Enable();
-            
-            _moveAction = _playerInputSystem.Player.Move;
+            _moveAction = _playerInputSystem.MoveAction;
         }
 
         private void Start()

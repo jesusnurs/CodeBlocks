@@ -1,18 +1,15 @@
-using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Data;
+using Unity.Netcode;
 using Zenject;
 
 namespace Player
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : NetworkBehaviour
     {
-        [Inject]
         private PlayerMovementData _playerMovementData;
-        [Inject]
         private PlayerInputSystem _playerInputSystem;
         
         private InputAction _moveAction;
@@ -24,21 +21,34 @@ namespace Player
         
         private float _moveSpeed;
         private float _dashForce;
-        
 
-        private void Awake()
+        [Inject]
+        public void Construct(PlayerMovementData playerMovementData, PlayerInputSystem playerInputSystem)
         {
+            _playerMovementData = playerMovementData;
+            _playerInputSystem = playerInputSystem;
+        }
+
+        private void Init()
+        {
+            // Construct
+            
             _rigidbody = GetComponent<Rigidbody>();
             _moveAction = _playerInputSystem.MoveAction;
         }
-
+        
         private void Start()
         {
+            Init();
+            
             _moveSpeed = _playerMovementData.MovementSpeed;
         }
         
         private void FixedUpdate()
         {
+            if(!IsOwner)
+                return;
+            
             HandleMovement();
         }
 

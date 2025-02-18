@@ -10,11 +10,11 @@ namespace Installers
         
         public override void InstallBindings()
         {
-            Container.BindInterfacesAndSelfTo<UserBalanceSystem>().AsSingle();
-            Container.BindInterfacesAndSelfTo<PlayerInputSystem>().AsSingle();
+            Container.BindInterfacesAndSelfTo<UserBalanceSystem>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<PlayerInputSystem>().AsSingle().NonLazy();
             
             //Data
-            Container.BindInstance(playerMovementData).AsSingle();
+            Container.BindInstance(playerMovementData).AsSingle().NonLazy();
         }
     }
 }

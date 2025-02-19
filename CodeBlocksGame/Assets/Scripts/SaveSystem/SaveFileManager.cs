@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class SaveFileManager
 {
-    private static readonly string localFileName = "saveFile";
+    private static readonly string localFileName = "SaveFile";
     private static string LocalFilePath => Application.persistentDataPath + "/" + localFileName;
     public static Action<SaveData> OnSaveFileChanged { get; set; }
     

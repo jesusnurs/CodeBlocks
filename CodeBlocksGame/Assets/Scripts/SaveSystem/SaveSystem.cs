@@ -1,8 +1,17 @@
-public class SaveSystem
+using Zenject;
+
+public class SaveSystem : IInitializable
 {
+	public static SaveSystem Instance;
+	
 	private SaveData mySaveData;
 	private SaveData _saveData;
 	private bool cached;
+	
+	public void Initialize()
+	{
+		Instance = this;
+	}
 	
 	public SaveData GetSaveData()
 	{
@@ -20,7 +29,7 @@ public class SaveSystem
 		return mySaveData;
 	}
 
-	public void UpdateSaveData()
+	private void UpdateSaveData()
 	{
 		SaveFileManager.UpdateSaveData(_saveData);
 	}

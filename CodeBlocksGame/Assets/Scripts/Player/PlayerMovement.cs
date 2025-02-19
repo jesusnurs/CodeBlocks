@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Data;
 using Unity.Netcode;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace Player
@@ -9,9 +10,9 @@ namespace Player
     [RequireComponent(typeof(Rigidbody))]
     public class PlayerMovement : NetworkBehaviour
     {
-        private PlayerMovementData _playerMovementData;
-        private PlayerInputSystem _playerInputSystem;
+        [SerializeField] private PlayerMovementData playerMovementData;
         
+        private PlayerInput _playerInput;
         private InputAction _moveAction;
         private InputAction _dashAction;
         private InputAction _interactAction;
@@ -21,27 +22,20 @@ namespace Player
         
         private float _moveSpeed;
         private float _dashForce;
-
-        [Inject]
-        public void Construct(PlayerMovementData playerMovementData, PlayerInputSystem playerInputSystem)
-        {
-            _playerMovementData = playerMovementData;
-            _playerInputSystem = playerInputSystem;
-        }
-
-        private void Init()
-        {
-            // Construct
-            
-            _rigidbody = GetComponent<Rigidbody>();
-            _moveAction = _playerInputSystem.MoveAction;
-        }
         
-        private void Start()
+        public override void OnNetworkSpawn()
         {
-            Init();
-            
-            _moveSpeed = _playerMovementData.MovementSpeed;
+            base.OnNetworkSpawn();
+            if(IsOwner)
+            {
+                _playerInput = GetComponent<PlayerInput>();
+                _playerInput.ActivateInput();
+                _rigidbody = GetComponent<Rigidbody>();
+
+                _moveAction = _playerInput.actions.FindAction("Move");
+                _moveAction.Enable();
+                _moveSpeed = playerMovementData.MovementSpeed;
+            }
         }
         
         private void FixedUpdate()
@@ -55,6 +49,9 @@ namespace Player
         private void HandleMovement()
         {
             _movementDirection = _moveAction.ReadValue<Vector2>();
+            Debug.Log(_movementDirection + "   " + _moveSpeed);
+            Debug.Log(_playerInput.inputIsActive);
+            Debug.Log(_playerInput.devices.ToArray());
             _rigidbody.AddForce(new Vector3(_movementDirection.x, 0.0f, _movementDirection.y) * _moveSpeed,ForceMode.Force);
         }
     }

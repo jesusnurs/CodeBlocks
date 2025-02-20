@@ -1,0 +1,65 @@
+{
+    "name": "InputManagerActions",
+    "maps": [
+        {
+            "name": "Input",
+            "id": "b62e3541-b925-4faa-a90c-c3b8e11bdf45",
+            "actions": [
+                {
+                    "name": "AddNewDevice",
+                    "type": "Button",
+                    "id": "292110bf-82a2-4c45-9976-e199579e1f91",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DivideKeyboard",
+                    "type": "Button",
+                    "id": "66ab6cc5-5a73-4582-9829-aafc2eec923f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7bf8342b-45b0-4b48-aea4-7c290143ed24",
+                    "path": "<Keyboard>/anyKey",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AddNewDevice",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c0552360-a7e4-4539-8c3b-263cc8a06684",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AddNewDevice",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d17e59ce-7b7f-4400-9bdc-958086981af9",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DivideKeyboard",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

@@ -12,7 +12,7 @@ namespace Player
     {
         [SerializeField] private PlayerMovementData playerMovementData;
         
-        private PlayerInput _playerInput;
+        private PlayerInputActions _playerInput;
         private InputAction _moveAction;
         private InputAction _dashAction;
         private InputAction _interactAction;
@@ -28,12 +28,14 @@ namespace Player
             base.OnNetworkSpawn();
             if(IsOwner)
             {
-                _playerInput = GetComponent<PlayerInput>();
-                _playerInput.ActivateInput();
                 _rigidbody = GetComponent<Rigidbody>();
+                
+                _playerInput = new PlayerInputActions();
+                _playerInput.Enable();
 
-                _moveAction = _playerInput.actions.FindAction("Move");
+                _moveAction = _playerInput.FindAction("Move");
                 _moveAction.Enable();
+                
                 _moveSpeed = playerMovementData.MovementSpeed;
             }
         }
@@ -49,9 +51,6 @@ namespace Player
         private void HandleMovement()
         {
             _movementDirection = _moveAction.ReadValue<Vector2>();
-            Debug.Log(_movementDirection + "   " + _moveSpeed);
-            Debug.Log(_playerInput.inputIsActive);
-            Debug.Log(_playerInput.devices.ToArray());
             _rigidbody.AddForce(new Vector3(_movementDirection.x, 0.0f, _movementDirection.y) * _moveSpeed,ForceMode.Force);
         }
     }

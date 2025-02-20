@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class OfficeWorker : NetworkBehaviour, IInteractable
 {
-    [SerializeField] private GameObject buttonIcon;
-
     public bool interactable;
     
     public void Interact()
@@ -19,10 +17,5 @@ public class OfficeWorker : NetworkBehaviour, IInteractable
     public void UnInteract()
     {
         Debug.Log("UnInteract");
-    }
-
-    public void SelectedVisual(bool isSelected)
-    {
-        buttonIcon.SetActive(isSelected);
     }
 }

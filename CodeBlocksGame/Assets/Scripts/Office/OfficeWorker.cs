@@ -10,8 +10,8 @@ public class OfficeWorker : NetworkBehaviour, IInteractable
     private event Action<bool> OnTaskChanged;
     private event Action<bool> OnTaskCompleted;
     
-    public bool _interactable;
-    
+    private NetworkVariable<bool> _interactableNetworkVariable = new NetworkVariable<bool>(false);
+
     public OfficeTask _currentOfficeTask;
     
     private void Awake()
@@ -20,15 +20,15 @@ public class OfficeWorker : NetworkBehaviour, IInteractable
         OnTaskCompleted += ShowTaskCompletedAnim;
 
         _currentOfficeTask = null;
-        _interactable = true;
+        _interactableNetworkVariable.Value = true;
     }
     
     public void Interact()
     {
-        if(!_interactable)
+        if(!_interactableNetworkVariable.Value)
             return;
         
-        _interactable = false;
+        _interactableNetworkVariable.Value = false;
         
         TryStartTask();
     }
@@ -40,30 +40,30 @@ public class OfficeWorker : NetworkBehaviour, IInteractable
     
     private void TryStartTask()
     {
-        if(!_interactable && _currentOfficeTask == null)
+        if(!_interactableNetworkVariable.Value && _currentOfficeTask == null)
             return;
-        
-        SetInteractableServerRpc(false);
+
+        _interactableNetworkVariable.Value = false;
         
         OfficeTaskSystem.Instance.StartTask(this);
     }
 
     public void ExitTask()
     {
-        SetInteractableServerRpc(true);
+        _interactableNetworkVariable.Value = true;
     }
 
     public void SetNewTask(OfficeTask newTask)
     {
         _currentOfficeTask = newTask;
         OnTaskChanged.Invoke(true);
-        SetInteractableServerRpc(true);
+        _interactableNetworkVariable.Value = true;
     }
 
     public void CompleteTask()
     {
         ClearTaskServerRpc(true);
-        SetInteractableServerRpc(true);
+        _interactableNetworkVariable.Value = true;
         OfficeTaskManager.Instance.CompleteTaskServerRpc();
         OfficeTaskManager.Instance.AddTaskInQueue(this);
         
@@ -73,7 +73,7 @@ public class OfficeWorker : NetworkBehaviour, IInteractable
     public void FailTask()
     {
         ClearTaskServerRpc(false);
-        SetInteractableServerRpc(true);
+        _interactableNetworkVariable.Value = true;
         OfficeTaskManager.Instance.FailTaskServerRpc();
         OfficeTaskManager.Instance.AddTaskInQueue(this);
         
@@ -93,12 +93,6 @@ public class OfficeWorker : NetworkBehaviour, IInteractable
     #region ServerRpc
     
     [ServerRpc(RequireOwnership = false)]
-    private void SetInteractableServerRpc(bool value)
-    {
-        SetInteractableClientRpc(value);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
     public void ClearTaskServerRpc(bool isSuccess)
     {
         ClearTaskClientRpc(isSuccess);
@@ -107,12 +101,6 @@ public class OfficeWorker : NetworkBehaviour, IInteractable
     #endregion
     
     #region ClientRpc
-    
-    [ClientRpc]
-    private void SetInteractableClientRpc(bool value)
-    {
-        _interactable = value;
-    }
     
     [ClientRpc]
     private void ClearTaskClientRpc(bool isSuccess)
